@@ -129,4 +129,68 @@ function loadSessions(){
 
     console.log(list);
 
+}// ===============================
+// BLUETOOTH BAĞLANTISI
+// ===============================
+
+const btnConnect = document.getElementById("btnConnect");
+const btnDisconnect = document.getElementById("btnDisconnect");
+
+btnConnect?.addEventListener("click", connectDevice);
+btnDisconnect?.addEventListener("click", disconnectDevice);
+
+async function connectDevice() {
+
+    try {
+
+        setStatus("Cihaz aranıyor...", "#ff9800");
+
+        bluetoothDevice = await navigator.bluetooth.requestDevice({
+            acceptAllDevices: true,
+            optionalServices: [
+                "0000ffe0-0000-1000-8000-00805f9b34fb",
+                "6e400001-b5a3-f393-e0a9-e50e24dcca9e"
+            ]
+        });
+
+        bluetoothDevice.addEventListener(
+            "gattserverdisconnected",
+            disconnectDevice
+        );
+
+        gattServer = await bluetoothDevice.gatt.connect();
+
+        connected = true;
+
+        setStatus(
+            "Bağlandı : " + (bluetoothDevice.name || "Bilinmeyen Cihaz"),
+            "#2e7d32"
+        );
+
+        alert("Bluetooth bağlantısı başarılı.");
+
+    } catch (e) {
+
+        console.error(e);
+
+        setStatus("Bağlantı başarısız", "#c62828");
+
+        alert(e.message);
+
+    }
+
+}
+
+function disconnectDevice() {
+
+    if (bluetoothDevice?.gatt?.connected) {
+
+        bluetoothDevice.gatt.disconnect();
+
+    }
+
+    connected = false;
+
+    setStatus("Bağlı Değil", "#c62828");
+
 }
