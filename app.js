@@ -159,7 +159,6 @@ async function connectDevice() {
         );
 
         gattServer = await bluetoothDevice.gatt.connect();
-        const serviceUUID = "0000ffe0-0000-1000-8000-00805f9b34fb";
 const characteristicUUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e";
 
 const service = await gattServer.getPrimaryService(serviceUUID);
